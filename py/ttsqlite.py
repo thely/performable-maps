@@ -11,6 +11,20 @@ def start_db():
 # Since there is no way to append extra directions when
 # a route is complete, the table should be dropped if a new
 # path is generated for a given performance.
+
+def get_directions():
+	con = start_db()
+	with con:
+		cur = con.cursor()
+		cur.execute("SELECT * FROM Path")
+
+		rows = cur.fetchall()
+		json_ret = { "steps" : [] }
+		for row in rows:
+			json_ret["steps"].append({ "text": row[1], "dist": row[2] })
+
+		return json_ret
+
 def insert_text(data):
 	con = start_db()
 	with con:

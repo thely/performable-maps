@@ -4,6 +4,7 @@ import SocketServer
 import cgi
 import os.path
 import logging
+import json
 import sqlite3 as lite
 import ttsqlite as db
 from urlparse import urlparse, parse_qs
@@ -17,10 +18,15 @@ class TTSServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		query = parse_qs(urlparse(self.path).query)
 		if (not query):
 			print "NO QUERY PRESENT; SERVE PAGE"
+			SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 		elif (query['type'][0] == "clicks"):
 			print "LET'S GET CLICKS"
 		elif (query['type'][0] == "directions"):
 			print "LET'S GET DIRECTIONS"
+			self.send_response(200)
+			self.send_header('Content-Type', 'application/json')
+			self.end_headers()
+			self.wfile.write(json.dumps(db.get_directions()))
 		else:
 			print "INCORRECT QUERY TYPE"
 
@@ -29,7 +35,6 @@ class TTSServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		# pprint(vars(form))
 		# self.send_head()
 		# logging.error(self.headers)
-		SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 
 	# Used for sending data to SqLite; the Maps stuff is complete,
 	# and now we're storing it for when we need it.
