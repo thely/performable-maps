@@ -12,11 +12,13 @@ SYNTH.init = function() {
 *** Get map data from Google if available
 ********************************************/
 SYNTH.generateMap = function() {
+	var origin = "San Fransisco, CA";
+	var destination = "Oakland, CA";
 	//provided code for getting the DirectionsService together
 	var directionsService = new google.maps.DirectionsService;
 	var directionsRequest = {
-		origin: "San Fransisco, CA",
-		destination: "Oakland, CA",
+		origin: origin,
+		destination: destination,
 		travelMode: google.maps.DirectionsTravelMode.DRIVING,
 		provideRouteAlternatives: false //multiple routes means a longer response time
 	}
@@ -30,6 +32,8 @@ SYNTH.generateMap = function() {
 				SYNTH.keepPath['num_steps'] = steps.length;
 				SYNTH.sendPath.append("distance", response['routes'][0]['legs'][0]['distance']['value']);
 				SYNTH.sendPath.append("num_steps", steps.length);
+				SYNTH.sendPath.append("start", origin);
+				SYNTH.sendPath.append("end", destination);
 				
 				//Sanitize huge dictionary to only have text instructions & distance
 				$.each(steps, function(key, value) {

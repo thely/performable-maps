@@ -1,5 +1,8 @@
 import sqlite3 as lite
 import sys
+import uuid
+from datetime import datetime
+import calendar
 from pprint import pprint
 
 def start_db():
@@ -29,12 +32,18 @@ def insert_text(data):
 	con = start_db()
 	with con:
 		cur = con.cursor()
-		items = format_data(data)
+		new_pathID = str(uuid.uuid4())
+		items = format_data(data, new_pathID)
+
+		pprint(items[0])
+		pprint(items[1])
 
 		cur.execute("DROP TABLE IF EXISTS Path")
-		cur.execute("CREATE TABLE Path(Id INT, Instructions TEXT, Distance INT)")
-		cur.executemany("INSERT INTO Path VALUES(?, ?, ?)", items)
-		cur.execute("SELECT * FROM Path")
+		cur.execute("CREATE TABLE IF NOT EXISTS Path(Id TEXT, Date_Created INT, Start TEXT, End TEXT, Distance TEXT, Step_Count TEXT)")
+		cur.execute("CREATE TABLE IF NOT EXISTS Steps(Path_Id TEXT, Step_Id INT, Instructions TEXT, Distance INT)")
+		cur.execute("INSERT INTO Path VALUES(?, ?, ?, ?, ?, ?)", items[0])
+		cur.executemany("INSERT INTO Steps VALUES(?, ?, ?, ?)", items[1])
+		cur.execute("SELECT * FROM Steps")
 
 		"""
 		rows = cur.fetchall()
@@ -59,10 +68,12 @@ def insert_clicks(data):
 			print row[0]
 		
 
-def format_data(data):
+def format_data(data, path_id):
 	# Make a shell for the data
 	length = int(data['num_steps'])
-	items = [{"index": 0, "text": "", "dist": 0} for x in range(0, length)]
+	right_now = calendar.timegm(datetime.utcnow().utctimetuple())
+	items = [{"path_id": path_id, "index": 0, "text": "", "dist": 0} for x in range(0, length)]
+	path_info = {"path_id": path_id, "time": right_now, "num_steps": 0, "distance": 0, "start": "", "end": ""}
 	# print data['num_steps']
 
 	# Format data to fit the shell
@@ -73,12 +84,17 @@ def format_data(data):
 				items[x]['text'] = data[key]
 			elif (key.startswith(str(x) + "-dist")):
 				items[x]['dist'] = data[key]
+			else:
+				path_info[key] = data[key]
 
 	# Tuple the data so SqLite will accept it
-	tupler = []
+	path_tuple = (path_info['path_id'], path_info['time'], path_info['start'], path_info['end'], path_info['distance'], path_info['num_steps'])
+	steps_tupler = []
 	for item in items:
-		tupler.append((item['index'], item['text'], int(item['dist'])))
-	return tupler
+		steps_tupler.append((item['path_id'], item['index'], item['text'], int(item['dist'])))
+
+	doubletupler = (path_tuple, steps_tupler)
+	return doubletupler
 
 
 
