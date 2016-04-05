@@ -15,11 +15,30 @@ def start_db():
 # a route is complete, the table should be dropped if a new
 # path is generated for a given performance.
 
-def get_directions():
+def get_directionslist():
 	con = start_db()
 	with con:
 		cur = con.cursor()
-		cur.execute("SELECT * FROM Path")
+		cur.execute("SELECT Id, Start, End, Date_Created FROM Path")
+		rows = cur.fetchall()
+		json_ret = { "paths": [] }
+		for row in rows:
+			json_ret["paths"].append({ 
+					"path_id": row[0], 
+					"start": row[1], 
+					"end": row[2], 
+					"date_created": row[3]
+			})
+
+		return json_ret
+
+def get_directions(path_id):
+	con = start_db()
+	with con:
+		cur = con.cursor()
+		sel_statement = "SELECT * FROM Steps WHERE Path_Id = \"" + str(path_id + "\"")
+		# pprint(sel_statement)
+		cur.execute(sel_statement)
 
 		rows = cur.fetchall()
 		json_ret = { "steps" : [] }
@@ -38,7 +57,7 @@ def insert_text(data):
 		pprint(items[0])
 		pprint(items[1])
 
-		cur.execute("DROP TABLE IF EXISTS Path")
+		# cur.execute("DROP TABLE IF EXISTS Path")
 		cur.execute("CREATE TABLE IF NOT EXISTS Path(Id TEXT, Date_Created INT, Start TEXT, End TEXT, Distance TEXT, Step_Count TEXT)")
 		cur.execute("CREATE TABLE IF NOT EXISTS Steps(Path_Id TEXT, Step_Id INT, Instructions TEXT, Distance INT)")
 		cur.execute("INSERT INTO Path VALUES(?, ?, ?, ?, ?, ?)", items[0])

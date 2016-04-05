@@ -16,17 +16,23 @@ class TTSServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
 	def do_GET(self):
 		print "We're getting!"
 		query = parse_qs(urlparse(self.path).query)
+		pprint(query)
 		if (not query):
 			print "NO QUERY PRESENT; SERVE PAGE"
 			SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 		elif (query['type'][0] == "clicks"):
 			print "LET'S GET CLICKS"
-		elif (query['type'][0] == "directions"):
+		elif (query['type'][0] == "steps"):
 			print "LET'S GET DIRECTIONS"
 			self.send_response(200)
 			self.send_header('Content-Type', 'application/json')
 			self.end_headers()
-			self.wfile.write(json.dumps(db.get_directions()))
+			self.wfile.write(json.dumps(db.get_directions(query['path-id'][0])))
+		elif (query['type'][0] == "paths"):
+			self.send_response(200)
+			self.send_header('Content-Type', 'application/json')
+			self.end_headers()
+			self.wfile.write(json.dumps(db.get_directionslist()))
 		else:
 			print "INCORRECT QUERY TYPE"
 
