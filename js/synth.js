@@ -6,6 +6,7 @@ SYNTH.init = function() {
 	$("button.talkerbutton").click(SYNTH.talkToMe);
 	$("button.mapbutton").click(SYNTH.generateMap);
 	$("button.clickbutton").click(SYNTH.fakeClickTest);
+	$("button.directionlist").click(SYNTH.getDirections);
 }
 
 /*******************************************
@@ -52,7 +53,7 @@ SYNTH.generateMap = function() {
 
 				//Send back to the server to be saved in Sqlite3
 				$.ajax({
-					url: "http://localhost:8080?type=directions",
+					url: "http://localhost:8080?type=steps",
 					method: "POST",
 					contentType: false,
 					processData: false,
@@ -112,6 +113,20 @@ SYNTH.fakeClickTest = function() {
 		console.log(data);
 		console.log("WE DID IT");
 	});
+}
+
+SYNTH.getDirections = function() {
+	$.ajax({
+		url: "http://localhost:8080?type=paths",
+		method: "GET",
+		contentType: false,
+		processData: false,
+		dataType: "json"
+	}).done(function(data){
+		console.log(data);
+		console.log("WE DID IT");
+		$(".testland").append(JSON.stringify(data));
+	});	
 }
 
 SYNTH.poller = function() {
