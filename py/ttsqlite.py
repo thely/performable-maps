@@ -75,17 +75,38 @@ def insert_clicks(data):
 	con = start_db()
 	with con:
 		cur = con.cursor()
-		cur.execute("CREATE TABLE IF NOT EXISTS Clicks(ClickId INT, StepId INT, TimeAdded INT, Checked INT)")
+		cur.execute("CREATE TABLE IF NOT EXISTS Clicks(Path_Id TEXT, Step_Id INT, Click_Id INT, TimeAdded INT, Checked INT)")
 
-		tupler = (data['click_id'], data['step_id'], data['timestamp'], data['checked'])
-		cur.execute("INSERT INTO Clicks VALUES(?, ?, ?, ?)", tupler)
+		tupler = (data['path_id'], data['step_id'], data['click_id'], data['timestamp'], data['checked'])
+		cur.execute("INSERT INTO Clicks VALUES(?, ?, ?, ?, ?)", tupler)
 		cur.execute("SELECT * FROM Clicks")
 
 		rows = cur.fetchall()
 
 		for row in rows:
 			print row[0]
-		
+
+def get_click():
+	con = start_db()
+	with con:
+		cur = con.cursor()
+		cur.execute("SELECT min(TimeAdded) FROM Clicks WHERE Checked = 0")
+		timestamp = cur.fetchone()[0]
+		if (timestamp == None):
+			return { "error_name": "No clicks", "error_desc": "Ran out of clicks. Wait for more."}
+
+		cur.execute("SELECT * FROM Clicks WHERE Checked = 0 AND TimeAdded = " + str(timestamp) + " LIMIT 1")
+
+		row = cur.fetchone()
+		# pprint(row)
+		json_ret = { "path_id": row[0], "step_id": row[1], "click_id": row[2], "timestamp": row[3] }
+
+		cur.execute("SELECT Instructions FROM Steps WHERE Path_Id = \"" + json_ret["path_id"] + "\"")
+		json_ret["text"] = cur.fetchone()[0]
+
+		cur.execute("UPDATE Clicks SET Checked = 1 WHERE Click_Id = " + str(json_ret['click_id']))
+		return json_ret
+
 
 def format_data(data, path_id):
 	# Make a shell for the data

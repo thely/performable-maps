@@ -21,7 +21,11 @@ class TTSServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			print "NO QUERY PRESENT; SERVE PAGE"
 			SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
 		elif (query['type'][0] == "clicks"):
-			print "LET'S GET CLICKS"
+			print "LET'S GET A DANG CLICK"
+			self.send_response(200)
+			self.send_header('Content-Type', 'application/json')
+			self.end_headers()
+			self.wfile.write(json.dumps(db.get_click()))
 		elif (query['type'][0] == "steps"):
 			print "LET'S GET DIRECTIONS"
 			self.send_response(200)
