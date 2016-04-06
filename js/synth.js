@@ -5,7 +5,7 @@ SYNTH.nextLine = 0;
 SYNTH.init = function() {
 	$("button.talkerbutton").click(SYNTH.talkToMe);
 	$("button.mapbutton").click(SYNTH.generateMap);
-	$("button.clickbutton").click(SYNTH.fakeClickTest);
+	$("button.clickbutton").click(SYNTH.poller);
 	$("button.directionlist").click(SYNTH.getDirections);
 }
 
@@ -27,7 +27,6 @@ SYNTH.generateMap = function() {
 		directionsRequest,
 		function(response, status) {
 			if (status == google.maps.DirectionsStatus.OK) {
-				
 				var steps = response['routes'][0]['legs'][0]['steps'];
 				SYNTH.keepPath['distance'] = response['routes'][0]['legs'][0]['distance']['value'];
 				SYNTH.keepPath['num_steps'] = steps.length;
@@ -73,7 +72,8 @@ SYNTH.generateMap = function() {
 /*******************************************
 *** Read one line at a time from the provided text
 ********************************************/
-SYNTH.talkToMe = function() {
+SYNTH.talkToMe = function(txt) {
+	console.log("Trying to say " + txt);
 	if (speechSynthesis in window) {
 		console.log("Theoretically, I should talk.");
 	}
@@ -82,15 +82,16 @@ SYNTH.talkToMe = function() {
 	}
 
 	var msg = new SpeechSynthesisUtterance();
-	msg.text = SYNTH.keepPath['steps'][SYNTH.nextLine]['text'];
+	//msg.text = SYNTH.keepPath['steps'][SYNTH.nextLine]['text'];
+	msg.text = txt;
 	msg.voiceURI = 'native';
 	msg.lang = 'en-US';
 	window.speechSynthesis.speak(msg);	
 
-	if (SYNTH.nextLine + 1 >= SYNTH.keepPath['steps'].length) {
-		SYNTH.nextLine = 0;
-	}
-	else SYNTH.nextLine++;
+	//if (SYNTH.nextLine + 1 >= SYNTH.keepPath['steps'].length) {
+	//	SYNTH.nextLine = 0;
+	//}
+	//else SYNTH.nextLine++;
 }
 
 SYNTH.fakeClick = 0;
@@ -129,15 +130,22 @@ SYNTH.getDirections = function() {
 	});	
 }
 
+SYNTH.pollCount = 0;
+SYNTH.lastTimestamp = "none";
 SYNTH.poller = function() {
 	(function poll() {
 		setTimeout(function() {
+			console.log("Polling attempt #" + SYNTH.pollCount);
+			SYNTH.pollCount++;
 			$.ajax({ 
-				url: "http://localhost:8080",
+				url: "http://localhost:8080?type=clicks",
 				method: "GET",
 				dataType: "json",
 				success: function(data) {
-					console.log(data);
+					$(".testland").append(JSON.stringify(data));
+					//console.log(data['timestamp']);
+					SYNTH.talkToMe(data['text']);
+					//SYNTH.lastTimestamp = data['timestamp'];
 				},
 				complete: poll
 			});
