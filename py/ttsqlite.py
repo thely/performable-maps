@@ -101,7 +101,7 @@ def get_click():
 		# pprint(row)
 		json_ret = { "path_id": row[0], "step_id": row[1], "click_id": row[2], "timestamp": row[3] }
 
-		cur.execute("SELECT Instructions FROM Steps WHERE Path_Id = \"" + json_ret["path_id"] + "\"")
+		cur.execute("SELECT Instructions FROM Steps WHERE Path_Id = \"" + json_ret["path_id"] + "\" AND Step_Id = " + str(json_ret["step_id"]))
 		json_ret["text"] = cur.fetchone()[0]
 
 		cur.execute("UPDATE Clicks SET Checked = 1 WHERE Click_Id = " + str(json_ret['click_id']))

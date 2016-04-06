@@ -144,7 +144,13 @@ SYNTH.poller = function() {
 				success: function(data) {
 					$(".testland").append(JSON.stringify(data));
 					//console.log(data['timestamp']);
-					SYNTH.talkToMe(data['text']);
+					if ("error_name" in data) {
+						console.log("I ain't talkin. You can't make me.");
+					}
+					else {
+						SYNTH.talkToMe(data['text']);
+						console.log("Done talkin' for now");
+					}
 					//SYNTH.lastTimestamp = data['timestamp'];
 				},
 				complete: poll
