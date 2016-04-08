@@ -43,6 +43,42 @@ The Web Speech API is not accessible via jweb, Max's Chromium-based embedded bro
 
 **Variables**
 
+* click_id: the id of this click
+* step_id: which step instruction this click intends to trigger
+* timestamp: when this click was sent from Max
+* voice_type: the SpeechSynthesisVoice to be used for this click; usually set before any clicks are triggered, but present in case changes are desired.
+* checked: whether or not the browser has found this click while polling yet.
+
+**Methods**
+
+* GET: From the browser, check for any unchecked clicks that Max has sent.
+* POST: From Max, send a new click.
+
+### ?type=speak&ask=[voicelist,triggers]
+
+To make life easier on the performer, some of the mostly-browser actions are in Max. &ask=voicelist is the list of SpeechSynthesisVoices, stored/sent for Max's benefit, and &ask=triggers sends notifications to Max when a SpeechSynthesisUtterance begins/ends.
+
+#### &ask=voicelist
+
+* GET: From Max, get the list of voices available to the browser.
+* POST: Once all voices are loaded in the browser, send the list to the server, to be polled for in Max.
+
+#### &ask=triggers
+
+* GET: Max asks for onstart/onend
+* POST: Browser sends onstart/onend
+
+**Variables**
+
+* id: just a number, so that the voices are in order in the Max menu
+* text: name of this voice
+
+**Methods**
+
+* GET: From Max, get the list of voices
+
+**Variables**
+
 * click_id: id of this click
 * step_id: the step that this click is attempting to trigger
 * timestamp: when this click was sent
@@ -55,29 +91,25 @@ The Web Speech API is not accessible via jweb, Max's Chromium-based embedded bro
 
 ## TODO
 
-Short-Term:
-
-* ~~Get directions from server in Max - done!~~
-* ~~Adjust database structure - Path table and Steps table - done!~~
-* ~~Make umenu out of paths dict - done~~
-* ~~Get steps based on path uuid - done~~
 * Make distance ratios based on mileage in directions
-* ~~Start sending clicks!!~~
-* Add voice selection/detection
+* Notify Max of onstart/onend
+* Make Maps requests from inside Max
+* Start recording resulting speech
+* Figure out a good UI for this mess
 
-Goals:
+Eventually:
+
+* Make sure the browser-opener code works with this
+* See if jython/py objects will play nice and run the server inside Max
+
+Done: 
 
 * ~~Fix timestamp production in patch~~ (fixed itself?)
 * ~~Send clicks with timestamp~~
 * ~~Poll for clicks from inside browser~~
-* Start recording resulting speech
-* Figure out a good UI for this mess
-
-## Issues
-
-There isn't currently a way to send a Google Maps request from inside the patch. I guess I could use jweb, but then this starts to get a little ridiculous.
-
-From the browser, Max needs:
-* map generation
-* voice selection
-* notification of onstart, onend, pending?
+* ~~Start sending clicks!!~~
+* ~~Add voice selection/detection~~
+* ~~Get directions from server in Max - done!~~
+* ~~Adjust database structure - Path table and Steps table - done!~~
+* ~~Make umenu out of paths dict - done~~
+* ~~Get steps based on path uuid - done~~
