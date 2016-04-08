@@ -2,6 +2,7 @@ SYNTH = {};
 SYNTH.keepPath = { "distance": 0, "steps": [] };
 SYNTH.sendPath = new FormData();
 SYNTH.nextLine = 0;
+SYNTH.voices = $(".voice");
 SYNTH.init = function() {
 	$("button.talkerbutton").click(SYNTH.talkToMe);
 	$("button.mapbutton").click(SYNTH.generateMap);
@@ -84,8 +85,9 @@ SYNTH.talkToMe = function(txt) {
 	var msg = new SpeechSynthesisUtterance();
 	//msg.text = SYNTH.keepPath['steps'][SYNTH.nextLine]['text'];
 	msg.text = txt;
-	msg.voiceURI = 'native';
-	msg.lang = 'en-US';
+	msg.voice = speechSynthesis.getVoices().filter(function(voice) {
+		return voice.name == $(".voice").val();
+	})[0];
 	window.speechSynthesis.speak(msg);	
 
 	//if (SYNTH.nextLine + 1 >= SYNTH.keepPath['steps'].length) {
@@ -93,6 +95,31 @@ SYNTH.talkToMe = function(txt) {
 	//}
 	//else SYNTH.nextLine++;
 }
+SYNTH.loadVoices = function() {
+	var voices = speechSynthesis.getVoices();
+  
+	voices.forEach(function(voice, i) {
+		console.log(voice);
+		var option = document.createElement('option');
+    
+		option.value = voice.name;
+		option.innerHTML = voice.name;
+		  
+    // Add the option to the voice selector.
+		$(".voice")
+			.append($("<option></option>")
+			.attr("value", voice.name)
+			.text(voice.name));
+	});
+}
+
+// Execute loadVoices.
+SYNTH.loadVoices();
+
+// Chrome loads voices asynchronously.
+window.speechSynthesis.onvoiceschanged = function(e) {
+  SYNTH.loadVoices();
+};
 
 SYNTH.fakeClick = 0;
 SYNTH.fakeClickTest = function() {

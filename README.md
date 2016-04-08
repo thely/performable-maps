@@ -39,7 +39,7 @@ Steps are the individual instructions in a path.
 
 ### ?type=clicks
 
-The Web Speech API is not accessible via jweb, Max's Chromium-based embedded browser. We have to trick the browser into auto-triggering button presses by sending "clicks" to the server in Max, which the browser polls for to see changes.
+The Web Speech API is not accessible via jweb, Max's Chromium-based embedded browser. We have to trick an actual browser window (optimally, Chrome) into auto-triggering button presses by polling for "clicks" from the server, which are sent to the server by Max.
 
 **Variables**
 
@@ -76,3 +76,8 @@ Goals:
 ## Issues
 
 There isn't currently a way to send a Google Maps request from inside the patch. I guess I could use jweb, but then this starts to get a little ridiculous.
+
+From the browser, Max needs:
+* map generation
+* voice selection
+* notification of onstart, onend, pending?
