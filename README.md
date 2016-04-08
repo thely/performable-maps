@@ -63,11 +63,6 @@ To make life easier on the performer, some of the mostly-browser actions are in 
 * GET: From Max, get the list of voices available to the browser.
 * POST: Once all voices are loaded in the browser, send the list to the server, to be polled for in Max.
 
-#### &ask=triggers
-
-* GET: Max asks for onstart/onend
-* POST: Browser sends onstart/onend
-
 **Variables**
 
 * id: just a number, so that the voices are in order in the Max menu
@@ -77,17 +72,10 @@ To make life easier on the performer, some of the mostly-browser actions are in 
 
 * GET: From Max, get the list of voices
 
-**Variables**
+#### &ask=triggers
 
-* click_id: id of this click
-* step_id: the step that this click is attempting to trigger
-* timestamp: when this click was sent
-* checked: whether or not the browser has seen this click while longpolling
-
-**Methods**
-
-* GET: From the browser, check if there are any new clicks.
-* POST: From Max, request that the browser play the next sound.
+* GET: Max asks for onstart/onend
+* POST: Browser sends onstart/onend
 
 ## TODO
 
