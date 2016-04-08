@@ -53,7 +53,7 @@ SYNTH.generateMap = function() {
 
 				//Send back to the server to be saved in Sqlite3
 				$.ajax({
-					url: "http://localhost:8080?type=steps",
+					url: "http://localhost:8080?type=paths",
 					method: "POST",
 					contentType: false,
 					processData: false,
@@ -73,7 +73,9 @@ SYNTH.generateMap = function() {
 /*******************************************
 *** Read one line at a time from the provided text
 ********************************************/
-SYNTH.talkToMe = function(txt) {
+SYNTH.currentVoice;
+SYNTH.message = new SpeechSynthesisUtterance();
+SYNTH.talkToMe = function(txt, voiceType) {
 	console.log("Trying to say " + txt);
 	if (speechSynthesis in window) {
 		console.log("Theoretically, I should talk.");
@@ -82,28 +84,38 @@ SYNTH.talkToMe = function(txt) {
 		console.log("No talking will be had.");
 	}
 
-	var msg = new SpeechSynthesisUtterance();
 	//msg.text = SYNTH.keepPath['steps'][SYNTH.nextLine]['text'];
-	msg.text = txt;
-	msg.voice = speechSynthesis.getVoices().filter(function(voice) {
-		return voice.name == $(".voice").val();
-	})[0];
-	window.speechSynthesis.speak(msg);	
+	SYNTH.message.text = txt;
+	if (SYNTH.currentVoice == null || SYNTH.currentVoice.name != voiceType) {
+		SYNTH.currentVoice = speechSynthesis.getVoices().filter(function(voice) {
+			return voice.name == voiceType;
+		})[0];
+	}
+	SYNTH.message.voice = SYNTH.currentVoice;
+	console.log(SYNTH.currentVoice);
+	window.speechSynthesis.speak(SYNTH.message);
 
 	//if (SYNTH.nextLine + 1 >= SYNTH.keepPath['steps'].length) {
 	//	SYNTH.nextLine = 0;
 	//}
 	//else SYNTH.nextLine++;
 }
+
+SYNTH.message.onend = function(event) {
+	console.log("Done saying " + SYNTH.message.text);	
+}
+
 SYNTH.loadVoices = function() {
 	var voices = speechSynthesis.getVoices();
-  
+	var allVoices = new FormData();
+
 	voices.forEach(function(voice, i) {
-		console.log(voice);
+		//console.log(voice);
 		var option = document.createElement('option');
     
 		option.value = voice.name;
 		option.innerHTML = voice.name;
+		allVoices.append(i, voice.name);
 		  
     // Add the option to the voice selector.
 		$(".voice")
@@ -111,14 +123,29 @@ SYNTH.loadVoices = function() {
 			.attr("value", voice.name)
 			.text(voice.name));
 	});
+
+	return allVoices;
 }
 
 // Execute loadVoices.
 SYNTH.loadVoices();
 
+SYNTH.allVoicesLoaded = 0;
 // Chrome loads voices asynchronously.
 window.speechSynthesis.onvoiceschanged = function(e) {
-  SYNTH.loadVoices();
+	if (SYNTH.allVoicesLoaded == 0) {
+		allVoices = SYNTH.loadVoices();
+
+		$.ajax({
+			url: "http://localhost:8080?type=speak&ask=voicelist",
+			method: "POST",
+			contentType: false,
+			processData: false,
+			data: allVoices,
+		}).done(function(data){
+			console.log("All voices sent.");
+		});
+	}
 };
 
 SYNTH.fakeClick = 0;
@@ -175,7 +202,7 @@ SYNTH.poller = function() {
 						console.log("I ain't talkin. You can't make me.");
 					}
 					else {
-						SYNTH.talkToMe(data['text']);
+						SYNTH.talkToMe(data['text'], data['voice_type']);
 						console.log("Done talkin' for now");
 					}
 					//SYNTH.lastTimestamp = data['timestamp'];
