@@ -75,10 +75,10 @@ def insert_clicks(data):
 	con = start_db()
 	with con:
 		cur = con.cursor()
-		cur.execute("CREATE TABLE IF NOT EXISTS Clicks(Path_Id TEXT, Step_Id INT, Click_Id INT, TimeAdded INT, Checked INT)")
+		cur.execute("CREATE TABLE IF NOT EXISTS Clicks(Path_Id TEXT, Step_Id INT, Click_Id INT, Voice_Type TEXT, TimeAdded INT, Checked INT)")
 
-		tupler = (data['path_id'], data['step_id'], data['click_id'], data['timestamp'], data['checked'])
-		cur.execute("INSERT INTO Clicks VALUES(?, ?, ?, ?, ?)", tupler)
+		tupler = (data['path_id'], data['step_id'], data['click_id'], data['voice_type'], data['timestamp'], data['checked'])
+		cur.execute("INSERT INTO Clicks VALUES(?, ?, ?, ?, ?, ?)", tupler)
 		cur.execute("SELECT * FROM Clicks")
 
 		rows = cur.fetchall()
@@ -99,7 +99,7 @@ def get_click():
 
 		row = cur.fetchone()
 		# pprint(row)
-		json_ret = { "path_id": row[0], "step_id": row[1], "click_id": row[2], "timestamp": row[3] }
+		json_ret = { "path_id": row[0], "step_id": row[1], "click_id": row[2], "voice_type": row[3], "timestamp": row[4] }
 
 		cur.execute("SELECT Instructions FROM Steps WHERE Path_Id = \"" + json_ret["path_id"] + "\" AND Step_Id = " + str(json_ret["step_id"]))
 		json_ret["text"] = cur.fetchone()[0]
@@ -107,6 +107,41 @@ def get_click():
 		cur.execute("UPDATE Clicks SET Checked = 1 WHERE Click_Id = " + str(json_ret['click_id']))
 		return json_ret
 
+def insert_voices(data):
+	con = start_db()
+	with con:
+		cur = con.cursor()
+		cur.execute("DROP TABLE IF EXISTS VoiceList")
+		cur.execute("CREATE TABLE IF NOT EXISTS VoiceList(Id INT, VoiceName TEXT)")
+
+		# pprint(data)
+
+		voicelist = []
+		for i in data:
+			# pprint(i)
+			# pprint(data[i])
+			voicelist.append((int(i), unicode(data[i])))
+
+		pprint(voicelist)
+		cur.executemany("INSERT INTO VoiceList VALUES(?, ?)", voicelist)
+		pprint("DONE INSERTING VOICES?")
+
+
+def get_voices():
+	con = start_db()
+	with con:
+		cur = con.cursor()
+		cur.execute("SELECT * FROM VoiceList")
+		rows = cur.fetchall()
+		json_ret = {}
+		json_ret['voices'] = [None] * len(rows)
+		# pprint("Length of json_ret is " + str(len(json_ret)))
+
+		for row in rows:
+			pprint(row)
+			json_ret['voices'][row[0]] = str(row[1])
+
+		return json_ret
 
 def format_data(data, path_id):
 	# Make a shell for the data

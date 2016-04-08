@@ -2,6 +2,7 @@
 import SimpleHTTPServer
 import SocketServer
 import cgi
+import sys
 import os.path
 import logging
 import json
@@ -17,26 +18,36 @@ class TTSServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		print "We're getting!"
 		query = parse_qs(urlparse(self.path).query)
 		pprint(query)
-		if (not query):
+		if (not query): # Loading the browser window
 			print "NO QUERY PRESENT; SERVE PAGE"
 			SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
-		elif (query['type'][0] == "clicks"):
+		elif (query['type'][0] == "clicks"): # Browser polling for clicks
 			print "LET'S GET A DANG CLICK"
 			self.send_response(200)
 			self.send_header('Content-Type', 'application/json')
 			self.end_headers()
 			self.wfile.write(json.dumps(db.get_click()))
-		elif (query['type'][0] == "steps"):
+		elif (query['type'][0] == "steps"): # Max getting all steps for a path
 			print "LET'S GET DIRECTIONS"
 			self.send_response(200)
 			self.send_header('Content-Type', 'application/json')
 			self.end_headers()
 			self.wfile.write(json.dumps(db.get_directions(query['path-id'][0])))
-		elif (query['type'][0] == "paths"):
+		elif (query['type'][0] == "paths"): # Max getting all paths currently stored
 			self.send_response(200)
 			self.send_header('Content-Type', 'application/json')
 			self.end_headers()
 			self.wfile.write(json.dumps(db.get_directionslist()))
+		elif (query['type'][0] == "speak"): # Browser sending voice data
+			ask = query['ask'][0]
+			if (ask == "voicelist"):
+				print "GETTING VOICE LIST"
+				self.send_response(200)
+				self.send_header('Content-Type', 'application/json')
+				self.end_headers()
+				self.wfile.write(json.dumps(db.get_voices()))
+			elif (ask == "triggers"):
+				print "POSTING VOICE START/END"
 		else:
 			print "INCORRECT QUERY TYPE"
 
@@ -66,16 +77,22 @@ class TTSServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		else:
 			data = {}
 			for item in form.list:
-				# print "%s = %s" % (item.name, item.value)
 				data[item.name] = item.value
-			if (query['type'][0] == "clicks"):
+			if (query['type'][0] == "clicks"): # Max sending a click to the browser
 				print "WE ARE POSTING NEW CLICKS"
 				pprint(data)
 				db.insert_clicks(data)
-			elif (query['type'][0] == "directions"):
+			elif (query['type'][0] == "paths"): # Max/browser saving new paths/steps
 				print "WE ARE POSTING NEW DIRECTIONS"
 				pprint(data)
 				db.insert_text(data)
+			elif (query['type'][0] == "speak"): # Browser sending voice data
+				ask = query['ask'][0]
+				if (ask == "voicelist"):
+					print "POSTING VOICE LIST"
+					db.insert_voices(data)
+				elif (ask == "triggers"):
+					print "POSTING VOICE START/END"
 			else:
 				print "I DON'T KNOW WHAT'S HAPPENING"
 		
@@ -87,8 +104,10 @@ class TTSServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		SimpleHTTPServer.SimpleHTTPRequestHandler.end_headers(self)
 
 
-Handler = TTSServer
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
+Handler = TTSServer
 httpd = SocketServer.TCPServer(("", PORT), Handler)
 
 print "serving at port", PORT
