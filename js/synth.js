@@ -53,7 +53,7 @@ SYNTH.generateMap = function() {
 
 				//Send back to the server to be saved in Sqlite3
 				$.ajax({
-					url: "http://localhost:8080?type=paths",
+					url: "http://localhost:8080?obj=maps&type=paths",
 					method: "POST",
 					contentType: false,
 					processData: false,
@@ -137,7 +137,7 @@ window.speechSynthesis.onvoiceschanged = function(e) {
 		allVoices = SYNTH.loadVoices();
 
 		$.ajax({
-			url: "http://localhost:8080?type=speak&ask=voicelist",
+			url: "http://localhost:8080?obj=voice&type=voicelist",
 			method: "POST",
 			contentType: false,
 			processData: false,
@@ -158,7 +158,7 @@ SYNTH.fakeClickTest = function() {
 
 	//clickData = { "click_id": 0, "index": 3, "timestamp": 1457400687, "checked": 0};
 	$.ajax({
-		url: "http://localhost:8080?type=clicks",
+		url: "http://localhost:8080?obj=voice&type=triggers&action=utter",
 		method: "POST",
 		contentType: false,
 		processData: false,
@@ -170,9 +170,9 @@ SYNTH.fakeClickTest = function() {
 	});
 }
 
-SYNTH.getDirections = function() {
+SYNTH.getPathsList = function() {
 	$.ajax({
-		url: "http://localhost:8080?type=paths",
+		url: "http://localhost:8080?obj=maps&type=paths",
 		method: "GET",
 		contentType: false,
 		processData: false,
@@ -192,7 +192,7 @@ SYNTH.poller = function() {
 			console.log("Polling attempt #" + SYNTH.pollCount);
 			SYNTH.pollCount++;
 			$.ajax({ 
-				url: "http://localhost:8080?type=clicks",
+				url: "http://localhost:8080?obj=voice&type=triggers&action=utter",
 				method: "GET",
 				dataType: "json",
 				success: function(data) {
