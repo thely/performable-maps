@@ -24,36 +24,35 @@ class TTSServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			obj = query['obj'][0]
 			typ = query['type'][0]
 
-		# Look through the endpoints
-		if (obj == "maps"):
-			if (typ == "steps"):
-				print "LET'S GET DIRECTIONS"
-				self.get_response(db.get_directions, query['path-id'][0])
-			elif (typ == "paths"): # Max getting all paths currently stored
-				if ("action" in query):
-					print "Making a new map, fresh from Max"
-				self.get_response(db.get_directionslist)
-			else:
-				print "MAPS: Incorrect query type"
+			# Look through the endpoints
+			if (obj == "maps"):
+				if (typ == "steps"):
+					print "LET'S GET DIRECTIONS"
+					self.get_response(db.get_directions, query['path-id'][0])
+				elif (typ == "paths"): # Max getting all paths currently stored
+					if ("action" in query):
+						print "Making a new map, fresh from Max"
+					self.get_response(db.get_directionslist)
+				else:
+					print "MAPS: Incorrect query type"
 
-		elif (obj == "voice"): # Browser sending voice data
-			if (typ == "voicelist"):
-				print "GETTING VOICE LIST"
-				self.get_response(db.get_voices)
-			elif (typ == "triggers"):
-				act = query['action'][0]
-				if (act == "utter"): # Browser polling for clicks
-					print "LET'S GET A DANG CLICK"
-					self.get_response(db.get_click)
-					# self.wfile.write(json.dumps(db.get_click()))
-				elif (act == "onstart"):
-					print "SPEECH STARTED"
-				elif (act == "onend"):
-					print "SPEECH FINISHED"
+			elif (obj == "voice"): # Browser sending voice data
+				if (typ == "voicelist"):
+					print "GETTING VOICE LIST"
+					self.get_response(db.get_voices)
+				elif (typ == "triggers"):
+					act = query['action'][0]
+					if (act == "utter"): # Browser polling for clicks
+						print "LET'S GET A DANG CLICK"
+						self.get_response(db.get_click)
+						# self.wfile.write(json.dumps(db.get_click()))
+					elif (act == "boundary"):
+						print "CHECKING BOUNDARY"
+						self.get_response(db.get_speechtrigger)
+				else:
+					print "VOICE: Incorrect query type"
 			else:
-				print "VOICE: Incorrect query type"
-		else:
-			print "INCORRECT QUERY TYPE"
+				print "INCORRECT QUERY TYPE"
 
 
 		# form = cgi.FieldStorage()
@@ -94,14 +93,14 @@ class TTSServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
 					print "ADDING VOICE LIST"
 					db.insert_voices(data)
 				elif (typ == "triggers"):
+					print "POSTING A TRIGGER"
 					act = query['action'][0]
 					if (act == "utter"):
 						print "FAKING A CLICK"
 						db.insert_clicks(data)
-					elif (act == "onstart"):
-						print "Startin' spech"
-					elif (act == "onend"):
-						print "Endin' speech"
+					elif (act == "boundary"):
+						print "CHECKING SPEECHSYNTH BOUNDARY"
+						db.insert_speechtrigger(data)
 			else:
 				print "POST: Incorrect query type"
 		

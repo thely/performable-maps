@@ -107,6 +107,26 @@ def get_click():
 		cur.execute("UPDATE Clicks SET Checked = 1 WHERE Click_Id = " + str(json_ret['click_id']))
 		return json_ret
 
+def insert_speechtrigger(data):
+	con = start_db()
+	with con:
+		cur = con.cursor()
+		cur.execute("CREATE TABLE IF NOT EXISTS SpeechTrigger(Type TEXT, Time INT, Checked INT)")
+		cur.execute("INSERT INTO SpeechTrigger VALUES(?, ?, ?)", (data['type'], data['time'], data['checked']))
+
+def get_speechtrigger():
+	con = start_db()
+	with con:
+		cur = con.cursor()
+		cur.execute("SELECT min(Time), Type FROM SpeechTrigger WHERE Checked = 0")
+		row = cur.fetchone()
+		if (row[0] == None):
+			return { "result": "failure", "error_desc": "Ran outta boundaries. Wait for more."}
+
+		cur.execute("UPDATE SpeechTrigger SET Checked = 1 WHERE Time = " + str(row[0]))
+
+		return { "result": "success", "timestamp": row[0], "type": row[1] }
+
 def insert_voices(data):
 	con = start_db()
 	with con:

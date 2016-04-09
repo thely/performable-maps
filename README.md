@@ -2,9 +2,9 @@
 
 ## Python API "endpoints"
 
-These are internal endpoints meant to interact with data saved in a Sqlite3 database. They aren't "true" endpoints because the server is implemented using SimpleHttpServer, and I felt better about taking the cheap route with query strings than trying to reinvent Flask. Interacting with Google Maps is a separate action, done in a browser window. All data is returned as JSON.
+These are internal endpoints meant to interact with data saved in a Sqlite3 database. They aren't "true" endpoints because the server is implemented using SimpleHttpServer, and I felt better about taking the cheap route with query strings than trying to reinvent Flask. All data is returned as JSON.
 
-### ?type=paths
+### ?obj=maps&type=paths
 
 Paths is a list of each set of directions saved in the database.
 
@@ -22,7 +22,7 @@ Paths is a list of each set of directions saved in the database.
 * GET: Get a list of all paths currently saved.
 * POST: Add a new path to the list. Adding a path also means adding its steps; POSTing to paths and steps are essentially the same action.
 
-### ?type=steps&path-id=uuid
+### ?obj=maps&type=steps&path-id=uuid
 
 Steps are the individual instructions in a path.
 
@@ -37,7 +37,7 @@ Steps are the individual instructions in a path.
 
 * GET: Gets all the steps of a given path based on the path's UUID.
 
-### ?type=clicks
+### ?obj=voice&type=triggers&action=utter
 
 The Web Speech API is not accessible via jweb, Max's Chromium-based embedded browser. We have to trick an actual browser window (optimally, Chrome) into auto-triggering button presses by polling for "clicks" from the server, which are sent to the server by Max.
 
@@ -54,14 +54,24 @@ The Web Speech API is not accessible via jweb, Max's Chromium-based embedded bro
 * GET: From the browser, check for any unchecked clicks that Max has sent.
 * POST: From Max, send a new click.
 
-### ?type=speak&ask=[voicelist,triggers]
+### ?obj=voice&type=triggers&action=[onstart,onend]
 
-To make life easier on the performer, some of the mostly-browser actions are in Max. &ask=voicelist is the list of SpeechSynthesisVoices, stored/sent for Max's benefit, and &ask=triggers sends notifications to Max when a SpeechSynthesisUtterance begins/ends.
+SpeechSynthesisUtterances have .onstart() and .onend() to signify when the audio of an utterance starts and ends. Max can poll for these values, to trigger a record~ object on/off. Getting these values with enough time to be useful means polling at incredibly small time intervals (200 ms seems to work), but if we toggle off polling once `onend` is received, the server takes a bit less of a hit.
 
-#### &ask=voicelist
+**Variables**
 
-* GET: From Max, get the list of voices available to the browser.
-* POST: Once all voices are loaded in the browser, send the list to the server, to be polled for in Max.
+* type: whether the trigger is an onstart or onend event
+* time: a UNIX timestamp of when the event occurred
+* checked: whether or not Max has seen this event yet
+
+**Methods**
+
+* GET: Max asks for any available speech triggers
+* POST: Browser sends onstart/onend when utterances start/end
+
+### ?obj=voice&type=voicelist
+
+To make life easier on the performer, some of the mostly-browser actions are in Max. `voicelist` is the list of SpeechSynthesisVoices, stored/sent for Max's benefit.
 
 **Variables**
 
@@ -70,20 +80,15 @@ To make life easier on the performer, some of the mostly-browser actions are in 
 
 **Methods**
 
-* GET: From Max, get the list of voices
-
-#### &ask=triggers
-
-* GET: Max asks for onstart/onend
-* POST: Browser sends onstart/onend
+* GET: From Max, get the list of voices available to the browser.
+* POST: Once all voices are loaded in the browser, send the list to the server, to be polled for in Max. This should happen only once per pageload.
 
 ## TODO
 
 * Make distance ratios based on mileage in directions
-* Notify Max of onstart/onend
 * Make Maps requests from inside Max
-* Start recording resulting speech
 * Figure out a good UI for this mess
+* Record to files
 
 Eventually:
 
@@ -92,6 +97,8 @@ Eventually:
 
 Done: 
 
+* ~~Start recording resulting speech~~
+* ~~Notify Max of onstart/onend~~
 * ~~Fix timestamp production in patch~~ (fixed itself?)
 * ~~Send clicks with timestamp~~
 * ~~Poll for clicks from inside browser~~

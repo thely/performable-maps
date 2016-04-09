@@ -92,7 +92,7 @@ SYNTH.talkToMe = function(txt, voiceType) {
 		})[0];
 	}
 	SYNTH.message.voice = SYNTH.currentVoice;
-	console.log(SYNTH.currentVoice);
+	//console.log(SYNTH.currentVoice);
 	window.speechSynthesis.speak(SYNTH.message);
 
 	//if (SYNTH.nextLine + 1 >= SYNTH.keepPath['steps'].length) {
@@ -101,8 +101,30 @@ SYNTH.talkToMe = function(txt, voiceType) {
 	//else SYNTH.nextLine++;
 }
 
+SYNTH.message.onstart = function(event) {
+	console.log("Starting to speak");
+	SYNTH.boundSend("onstart");	
+}
+
 SYNTH.message.onend = function(event) {
-	console.log("Done saying " + SYNTH.message.text);	
+	console.log("Finished speaking");
+	SYNTH.boundSend("onend");
+}
+
+SYNTH.boundSend = function(type) {
+	var messEnd = new FormData();
+	messEnd.append("type", type);
+	messEnd.append("time", Date.now())
+	messEnd.append("checked", 0);
+	$.ajax({
+		url: "http://localhost:8080?obj=voice&type=triggers&action=boundary",
+		method: "POST",
+		contentType: false,
+		processData: false,
+		data: messEnd,
+	}).done(function(data){
+		console.log("Sent " + type + " to the server");
+	});
 }
 
 SYNTH.loadVoices = function() {
@@ -145,6 +167,7 @@ window.speechSynthesis.onvoiceschanged = function(e) {
 		}).done(function(data){
 			console.log("All voices sent.");
 		});
+		SYNTH.allVoicesLoaded = 1;
 	}
 };
 
@@ -196,14 +219,14 @@ SYNTH.poller = function() {
 				method: "GET",
 				dataType: "json",
 				success: function(data) {
-					$(".testland").append(JSON.stringify(data));
+					//$(".testland").append(JSON.stringify(data));
 					//console.log(data['timestamp']);
 					if ("error_name" in data) {
-						console.log("I ain't talkin. You can't make me.");
+						//console.log("No triggers found");
 					}
 					else {
 						SYNTH.talkToMe(data['text'], data['voice_type']);
-						console.log("Done talkin' for now");
+						//console.log("Done talkin' for now");
 					}
 					//SYNTH.lastTimestamp = data['timestamp'];
 				},
