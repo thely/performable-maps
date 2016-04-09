@@ -89,7 +89,8 @@ To make life easier on the performer, some of the mostly-browser actions are in 
 * Make Maps requests from inside Max
 * Figure out a good UI for this mess
 * ~~Record to files~~
-* Clear buffer between texts, load from files
+* ~~Clear buffer between texts,~~ load from files
+* ~~Change buffer end point based on record end point~~
 
 Eventually:
 

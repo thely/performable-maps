@@ -24,11 +24,11 @@ function anything() {
 		post("Step maximum not set.");
 		post();
 	}
-	else if (messagename == "prev" && step_id != 0) {
+	else if (messagename == "prev" && step_id >= 0) {
 		step_id -= 1;
 		bang();
 	}
-	else if (messagename == "next" && step_id != step_max-1) {
+	else if (messagename == "next" && step_id < step_max-1) {
 		step_id += 1;
 		bang();
 	}
