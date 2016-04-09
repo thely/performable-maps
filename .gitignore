@@ -1,4 +1,6 @@
-old
+old/
 *.pyc
 *.db
 .DS_Store
+sounds/
+text/

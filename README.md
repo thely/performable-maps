@@ -88,7 +88,8 @@ To make life easier on the performer, some of the mostly-browser actions are in 
 * Make distance ratios based on mileage in directions
 * Make Maps requests from inside Max
 * Figure out a good UI for this mess
-* Record to files
+* ~~Record to files~~
+* Clear buffer between texts, load from files
 
 Eventually:
 
