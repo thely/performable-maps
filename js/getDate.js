@@ -35,7 +35,7 @@ function anything() {
 	else if (messagename == "reset") {
 		post("Resetting values.");
 		post();
-		click_id = 0;
+		// click_id = 0;
 		step_id = 0;
 		
 	}

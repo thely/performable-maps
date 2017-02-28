@@ -121,7 +121,7 @@ def get_speechtrigger():
 		cur.execute("SELECT min(Time), Type FROM SpeechTrigger WHERE Checked = 0")
 		row = cur.fetchone()
 		if (row[0] == None):
-			return { "result": "failure", "error_desc": "Ran outta boundaries. Wait for more."}
+			return { "result": "failure", "type": "error", "error_desc": "Ran outta boundaries. Wait for more."}
 
 		cur.execute("UPDATE SpeechTrigger SET Checked = 1 WHERE Time = " + str(row[0]))
 
@@ -146,6 +146,10 @@ def insert_voices(data):
 		cur.executemany("INSERT INTO VoiceList VALUES(?, ?)", voicelist)
 		pprint("DONE INSERTING VOICES?")
 
+def clear_performance_data():
+	con = start_db()
+	cur.execute("DROP TABLE IF EXISTS Clicks")
+	cur.execute("DROP TABLE IF EXISTS SpeechTrigger")
 
 def get_voices():
 	con = start_db()

@@ -46,7 +46,7 @@ class TTSServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
 						print "LET'S GET A DANG CLICK"
 						self.get_response(db.get_click)
 						# self.wfile.write(json.dumps(db.get_click()))
-					elif (act == "boundary"):
+					elif (act == "boundary"): # Max trying to find the start/end of utterance
 						print "CHECKING BOUNDARY"
 						self.get_response(db.get_speechtrigger)
 				else:

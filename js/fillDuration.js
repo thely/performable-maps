@@ -19,7 +19,7 @@ function bang() {
 			outlet(1, bang);
 		}
 		else {
-			outlet (0, total);
+			outlet(0, total);
 		}
 	}
 }
