@@ -3,13 +3,13 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 7,
-			"minor" : 0,
-			"revision" : 5,
+			"minor" : 2,
+			"revision" : 3,
 			"architecture" : "x86",
 			"modernui" : 1
 		}
 ,
-		"rect" : [ 369.0, 78.0, 853.0, 782.0 ],
+		"rect" : [ 369.0, 79.0, 853.0, 782.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -72,8 +72,8 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 7,
-							"minor" : 0,
-							"revision" : 5,
+							"minor" : 2,
+							"revision" : 3,
 							"architecture" : "x86",
 							"modernui" : 1
 						}
@@ -797,8 +797,8 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 7,
-							"minor" : 0,
-							"revision" : 5,
+							"minor" : 2,
+							"revision" : 3,
 							"architecture" : "x86",
 							"modernui" : 1
 						}
@@ -837,7 +837,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 113.0, 17.0, 232.0, 60.0 ],
+									"patching_rect" : [ 113.0, 17.0, 233.0, 60.0 ],
 									"style" : "",
 									"text" : "Polls the server for onstart/onend events from the browser, and bangs on receiving either one. Outlet bangs trigger the toggle that starts/ends recording."
 								}
@@ -1342,13 +1342,13 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 7,
-							"minor" : 0,
-							"revision" : 5,
+							"minor" : 2,
+							"revision" : 3,
 							"architecture" : "x86",
 							"modernui" : 1
 						}
 ,
-						"rect" : [ 122.0, 78.0, 591.0, 554.0 ],
+						"rect" : [ 122.0, 79.0, 591.0, 554.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -1653,7 +1653,7 @@
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 222.5, 183.0, 117.0, 22.0 ],
 									"style" : "",
-									"text" : "\"32\""
+									"text" : "\"1\""
 								}
 
 							}
@@ -1664,14 +1664,14 @@
 									"numinlets" : 3,
 									"numoutlets" : 4,
 									"outlettype" : [ "", "", "", "" ],
-									"patching_rect" : [ 43.5, 183.0, 162.0, 22.0 ],
+									"patching_rect" : [ 43.5, 183.0, 77.0, 22.0 ],
 									"saved_object_attributes" : 									{
 										"filename" : "getDate.js",
 										"parameter_enable" : 0
 									}
 ,
 									"style" : "",
-									"text" : "js ~/Music/Auto/js/getDate.js"
+									"text" : "js getDate.js"
 								}
 
 							}
@@ -1684,12 +1684,12 @@
 										"multipart_form" : 										{
 											"path_id" : 											{
 												"name" : "path_id",
-												"content" : "7dc0dadb-38c5-449d-ae9c-1951365cd585"
+												"content" : "5dd3889c-ae02-4e92-a8d4-9d7dcb95bcc7"
 											}
 ,
 											"click_id" : 											{
 												"name" : "click_id",
-												"content" : "32"
+												"content" : "1"
 											}
 ,
 											"voice_type" : 											{
@@ -1699,12 +1699,12 @@
 ,
 											"step_id" : 											{
 												"name" : "step_id",
-												"content" : "8"
+												"content" : "1"
 											}
 ,
 											"timestamp" : 											{
 												"name" : "timestamp",
-												"content" : "1460227802870"
+												"content" : "1488299699017"
 											}
 ,
 											"checked" : 											{
@@ -1974,8 +1974,8 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 7,
-							"minor" : 0,
-							"revision" : 5,
+							"minor" : 2,
+							"revision" : 3,
 							"architecture" : "x86",
 							"modernui" : 1
 						}
@@ -2429,8 +2429,8 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 7,
-							"minor" : 0,
-							"revision" : 5,
+							"minor" : 2,
+							"revision" : 3,
 							"architecture" : "x86",
 							"modernui" : 1
 						}
@@ -2642,7 +2642,7 @@
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 53.666687, 357.0, 382.0, 35.0 ],
 									"style" : "",
-									"text" : "http://localhost:8080?obj=maps&type=steps&path-id=7dc0dadb-38c5-449d-ae9c-1951365cd585"
+									"text" : "http://localhost:8080?obj=maps&type=steps&path-id=5dd3889c-ae02-4e92-a8d4-9d7dcb95bcc7"
 								}
 
 							}
@@ -2917,8 +2917,8 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 7,
-							"minor" : 0,
-							"revision" : 5,
+							"minor" : 2,
+							"revision" : 3,
 							"architecture" : "x86",
 							"modernui" : 1
 						}
@@ -3487,14 +3487,14 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 647.0, 273.0, 107.0, 22.0 ],
+					"patching_rect" : [ 647.0, 273.0, 95.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"filename" : "encodeURI.js",
 						"parameter_enable" : 0
 					}
 ,
 					"style" : "",
-					"text" : "js js/encodeURI.js"
+					"text" : "js encodeURI.js"
 				}
 
 			}
@@ -3602,9 +3602,9 @@
 				"box" : 				{
 					"id" : "obj-52",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
+					"numinlets" : 3,
+					"numoutlets" : 4,
+					"outlettype" : [ "", "", "", "" ],
 					"patching_rect" : [ 402.5, 217.0, 77.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"filename" : "getDate.js",
@@ -3662,14 +3662,14 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 486.0, 130.333313, 176.0, 22.0 ],
+					"patching_rect" : [ 486.0, 130.333313, 91.0, 22.0 ],
 					"saved_object_attributes" : 					{
-						"filename" : "~/Music/Auto/js/fillDuration.js",
+						"filename" : "fillDuration.js",
 						"parameter_enable" : 0
 					}
 ,
 					"style" : "",
-					"text" : "js ~/Music/Auto/js/fillDuration.js"
+					"text" : "js fillDuration.js"
 				}
 
 			}
@@ -3709,8 +3709,8 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 7,
-							"minor" : 0,
-							"revision" : 5,
+							"minor" : 2,
+							"revision" : 3,
 							"architecture" : "x86",
 							"modernui" : 1
 						}
@@ -3978,8 +3978,8 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 7,
-							"minor" : 0,
-							"revision" : 5,
+							"minor" : 2,
+							"revision" : 3,
 							"architecture" : "x86",
 							"modernui" : 1
 						}
@@ -4604,18 +4604,24 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "fillDuration.js",
-				"bootpath" : "~/Music/Auto/js",
+				"bootpath" : "~/Documents/Becky/sites/performable-maps/js",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "getDate.js",
-				"bootpath" : "~/Music/Auto/js",
+				"bootpath" : "~/Documents/Becky/sites/performable-maps/js",
+				"type" : "TEXT",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "encodeURI.js",
+				"bootpath" : "~/Documents/Becky/sites/performable-maps/js",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
  ],
-		"embedsnapshot" : 0
+		"autosave" : 0
 	}
 
 }
