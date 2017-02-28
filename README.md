@@ -1,5 +1,16 @@
 # performable-maps
 
+## Basic Setup Instructions
+
+Prereqs: Soundflower, Max 7, Chrome, Python 2.7.x
+
+1. In Audio/MIDI Setup, set Soundflower as your default audio output.
+2. In Max, go to `Options > Audio Status`. Set Soundflower as your Input Device, and your interface (or Built-In Output) as your Output Device.
+3. Open Terminal and run the server with `python py/pythonServer.py`.
+4. In Chrome, go to `localhost:8080`. Press "Poll for Clicks" once the page loads.
+5. In Max, enter an origin and a destination, and select a voice. Since running this setup through Chrome allows you to use the Google voices, I'd recommend testing this with Google US English. I usually test with the typical Google Maps API origin/destination (San Fransisco, CA to Oakland, CA).
+6. Enable the DAC in Max by pressing the speaker or microphone icons. Press "next" to send a fake click to the browser. The browser polls for new clicks every 3 seconds, you may need to wait a few seconds before it kicks in.
+
 ## Python API "endpoints"
 
 These are internal endpoints meant to interact with data saved in a Sqlite3 database. They aren't "true" endpoints because the server is implemented using SimpleHttpServer, and I felt better about taking the cheap route with query strings than trying to reinvent Flask. All data is returned as JSON.
